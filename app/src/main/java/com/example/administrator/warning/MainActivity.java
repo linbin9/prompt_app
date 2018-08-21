@@ -1,7 +1,6 @@
 package com.example.administrator.warning;
 
-import android.app.Notification;
-import android.app.NotificationManager;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,30 +20,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button sure = (Button)findViewById(R.id.sure);
-    }
-    public void showmessage(){
-        //创建通知管理类
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        //创建通知建设类
-        Notification.Builder builder = new Notification.Builder(MainActivity.this);
-        //设置跳转的页面
-        PendingIntent intent = PendingIntent.getActivity(MainActivity.this,
-                100, new Intent(MainActivity.this, MainActivity.class),
-                PendingIntent.FLAG_CANCEL_CURRENT);
-        //设置通知栏标题
-        builder.setContentTitle("提示");
-        //设置通知栏内容
-        builder.setContentText("体力快满了！！！");
-        //设置跳转
-        //builder.setContentIntent(intent);
-        //设置图标
-        builder.setSmallIcon(R.mipmap.ic_launcher);
-        //设置
-        builder.setDefaults(Notification.DEFAULT_ALL);
-        //创建通知类
-        Notification notification = builder.build();
-        //显示在通知栏
-        manager.notify(0, notification);
     }
     private static String midStr1 =  "";
     private static String midStr2 =  "";
@@ -70,20 +45,39 @@ public class MainActivity extends AppCompatActivity {
     public void waittime(View vw){
         EditText value = (EditText)findViewById(R.id.value);
         EditText minutes = (EditText)findViewById(R.id.minutes);
+        EditText restminutes = (EditText)findViewById(R.id.restminutes);
+
         Calendar calendar = Calendar.getInstance();
-        int hour;
-        int minute;
-        hour = calendar.get(Calendar.HOUR_OF_DAY);
-        minute = calendar.get(Calendar.MINUTE);
-        int addhour = Integer.valueOf(value.getText().toString());
-        int addminutes = Integer.valueOf(minutes.getText().toString());
-        calendar.add(Calendar.HOUR_OF_DAY,addhour);
-        calendar.add(Calendar.MINUTE,addminutes);
-        while(true){
-            Calendar target = Calendar.getInstance();
-            Log.d("time",String.valueOf(target.get(Calendar.MINUTE)));
-            if(target.equals(calendar))break;
-        }
-        showmessage();
+
+        int a = Integer.valueOf(value.getText().toString());
+        int b = Integer.valueOf(restminutes.getText().toString());
+
+        Log.d("a", String.valueOf(a));
+        Log.d("b", String.valueOf(b));
+
+        int allminute = (139 - Integer.valueOf(minutes.getText().toString())) * 5 + Integer.valueOf(restminutes.getText().toString())
+                - Integer.valueOf(value.getText().toString());
+        int hour = allminute / 60;
+        int minute = allminute % 60;
+
+        Log.d("hour", String.valueOf(hour));
+        Log.d("minute", String.valueOf(minute));
+        calendar.add(Calendar.HOUR_OF_DAY,hour);
+        calendar.add(Calendar.MINUTE,minute);
+
+
+        Intent intent = new Intent(MainActivity.this,
+                Alarm.class);
+        // 创建PendingIntent对象
+        PendingIntent pi = PendingIntent.getActivity(
+                MainActivity.this, 0, intent, 0);
+        AlarmManager aManager = (AlarmManager)
+                getSystemService(ALARM_SERVICE);
+        // 设置AlarmManager将在Calendar对应的时间启动指定组件
+        aManager.set(AlarmManager.RTC_WAKEUP,
+                calendar.getTimeInMillis(), pi);
+        // 显示闹铃设置成功的提示信息
+        Toast.makeText(MainActivity.this, "提醒设置成功啦"
+                , Toast.LENGTH_SHORT).show();
     }
 }
