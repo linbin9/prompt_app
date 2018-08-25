@@ -80,4 +80,13 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, "提醒设置成功啦"
                 , Toast.LENGTH_SHORT).show();
     }
+    public void cancel (View view){
+        Intent intent = new Intent(MainActivity.this, Alarm.class);
+        PendingIntent pi = PendingIntent.getActivity(MainActivity.this, 0,
+                intent, 0);
+        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+        //取消警报
+        am.cancel(pi);
+        Toast.makeText(this, "关闭了提醒", Toast.LENGTH_SHORT).show();
+    }
 }

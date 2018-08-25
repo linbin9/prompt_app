@@ -109,5 +109,16 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
+    <Button
+        android:text="取消闹钟"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/sure"
+        android:layout_alignLeft="@+id/sure"
+        android:layout_alignStart="@+id/sure"
+        android:layout_marginBottom="28dp"
+        android:onClick="cancel"
+        android:id="@+id/bn" />
+
 
 </RelativeLayout>
